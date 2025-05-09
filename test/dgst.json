@@ -1,0 +1,8 @@
+{
+    "alg": "blake3",
+    "dgst": {
+        "not_found.txt": "9eb212758025aa8ecd766e4f4712cf671d305deb45d5b5c17552017e4c6bf95b",
+        "not_passed.txt": "2e9eda4cd1073f496ee6bcadea1c6dd55831a2841a856188dafb86b0263b5517",
+        "passed.txt": "82f862e8022c30906462eaa7aeba93607e6e60b826a7ff631f202bc04f9f804a"
+    }
+}

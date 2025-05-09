@@ -1,0 +1,96 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="源文件">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="头文件">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="资源文件">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="blake3">
+      <UniqueIdentifier>{63b5f1b6-4799-4c8a-b35f-b873a7e824f0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="utfcpp">
+      <UniqueIdentifier>{79a97b86-4f40-4b84-b022-6fc8a2351cba}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="main.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="blake3\blake3_dispatch.c">
+      <Filter>blake3</Filter>
+    </ClCompile>
+    <ClCompile Include="blake3\blake3_portable.c">
+      <Filter>blake3</Filter>
+    </ClCompile>
+    <ClCompile Include="blake3\blake3_sse2.c">
+      <Filter>blake3</Filter>
+    </ClCompile>
+    <ClCompile Include="blake3\blake3_sse41.c">
+      <Filter>blake3</Filter>
+    </ClCompile>
+    <ClCompile Include="blake3\blake3.c">
+      <Filter>blake3</Filter>
+    </ClCompile>
+    <ClCompile Include="blake3\blake3_avx2.c">
+      <Filter>blake3</Filter>
+    </ClCompile>
+    <ClCompile Include="blake3\blake3_avx512.c">
+      <Filter>blake3</Filter>
+    </ClCompile>
+    <ClCompile Include="blake3_file.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="blake3\blake3_impl.h">
+      <Filter>blake3</Filter>
+    </ClInclude>
+    <ClInclude Include="blake3\blake3.h">
+      <Filter>blake3</Filter>
+    </ClInclude>
+    <ClInclude Include="blake3_file.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="literals.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="json.hpp">
+      <Filter>源文件</Filter>
+    </ClInclude>
+    <ClInclude Include="utfcpp\utf8.h">
+      <Filter>utfcpp</Filter>
+    </ClInclude>
+    <ClInclude Include="utfcpp\utf8\checked.h">
+      <Filter>utfcpp</Filter>
+    </ClInclude>
+    <ClInclude Include="utfcpp\utf8\core.h">
+      <Filter>utfcpp</Filter>
+    </ClInclude>
+    <ClInclude Include="utfcpp\utf8\cpp11.h">
+      <Filter>utfcpp</Filter>
+    </ClInclude>
+    <ClInclude Include="utfcpp\utf8\cpp17.h">
+      <Filter>utfcpp</Filter>
+    </ClInclude>
+    <ClInclude Include="utfcpp\utf8\cpp20.h">
+      <Filter>utfcpp</Filter>
+    </ClInclude>
+    <ClInclude Include="utfcpp\utf8\unchecked.h">
+      <Filter>utfcpp</Filter>
+    </ClInclude>
+    <ClInclude Include="termcolor.hpp">
+      <Filter>源文件</Filter>
+    </ClInclude>
+    <ClInclude Include="BS_thread_pool.hpp">
+      <Filter>源文件</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>

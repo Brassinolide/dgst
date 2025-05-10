@@ -129,17 +129,41 @@ public:
     }
 };
 
-std::optional<json> parse_dgst(std::ifstream& dgst_io) {
+enum class ParseStatus {
+    OK,
+    INVALID_JSON_STRUCTURE,
+    SECURITY_VIOLATION
+};
+std::pair<ParseStatus, std::optional<json>> safe_parse_dgst(std::ifstream& dgst_io) {
     try {
         json test = json::parse(dgst_io);
-        if (test.contains("alg") && test.contains("dgst") && test["alg"].is_string() && test["dgst"].is_object()) {
-            return test;
+        if (!(test.contains("alg") && test.contains("dgst") && test["alg"].is_string() && test["dgst"].is_object())) {
+            return { ParseStatus::INVALID_JSON_STRUCTURE, std::nullopt };
         }
+
+        for (const auto& [key, value] : test["dgst"].items()) {
+            if (!value.is_string()) {
+                return { ParseStatus::INVALID_JSON_STRUCTURE, std::nullopt };
+            }
+
+            std::filesystem::path path(std::filesystem::u8path(key));
+
+            if (path.is_absolute()) {
+                return { ParseStatus::SECURITY_VIOLATION, std::nullopt };
+            }
+
+            for (const auto& part : path) {
+                if (part == "..") {
+                    return { ParseStatus::SECURITY_VIOLATION, std::nullopt };
+                }
+            }
+        }
+
+        return { ParseStatus::OK, test};
     }
     catch (const nlohmann::json::exception& e) {
-        return std::nullopt;
+        return { ParseStatus::INVALID_JSON_STRUCTURE, std::nullopt };
     }
-    return std::nullopt;
 }
 
 static void full_add(const std::filesystem::path& working_path, const std::filesystem::path& dgst_path) {
@@ -347,12 +371,19 @@ int mymain(int argc, char** argv_utf8) {
                     bad_dgst = true;
                 }
 
-                std::optional<json> parsed_dgst;
+                json parsed_dgst;
                 if (!bad_dgst) {
-                    parsed_dgst = parse_dgst(dgst_io);
-                    if (!parsed_dgst) {
-                        std::cerr << termcolor::red << "无法解析 dgst.json，将重新创建" << termcolor::reset << std::endl;
+                    const auto& [parse_status, parsed_data] = safe_parse_dgst(dgst_io);
+                    if (parse_status == ParseStatus::INVALID_JSON_STRUCTURE) {
+                        std::cerr << termcolor::red << "dgst.json 结构损坏，将重新创建" << termcolor::reset << std::endl;
                         bad_dgst = true;
+                    }
+                    else if (parse_status == ParseStatus::SECURITY_VIOLATION) {
+                        std::cerr << termcolor::red << "dgst.json 存在恶意攻击行为（可能是目录逃逸），将重新创建" << termcolor::reset << std::endl;
+                        bad_dgst = true;
+                    }
+                    else {
+                        parsed_dgst = parsed_data;
                     }
                 }
 
@@ -360,7 +391,7 @@ int mymain(int argc, char** argv_utf8) {
                     full_add(working_path, dgst_path);
                 }
                 else {
-                    increment_add(working_path, dgst_path, parsed_dgst.value());
+                    increment_add(working_path, dgst_path, parsed_dgst);
                 }
             }
             else {
@@ -377,12 +408,20 @@ int mymain(int argc, char** argv_utf8) {
                 CRITICAL_ERROR(std::cerr << "无法读取 dgst.json");
             }
 
-            std::optional<json> parsed_dgst = parse_dgst(dgst_io);
-            if (!parsed_dgst) {
-                CRITICAL_ERROR(std::cerr << "无法解析 dgst.json");
+            json parsed_dgst;
+
+            const auto& [parse_status, parsed_data] = safe_parse_dgst(dgst_io);
+            if (parse_status == ParseStatus::INVALID_JSON_STRUCTURE) {
+                CRITICAL_ERROR(std::cerr << "dgst.json 结构损坏");
+            }
+            else if (parse_status == ParseStatus::SECURITY_VIOLATION) {
+                CRITICAL_ERROR(std::cerr << "dgst.json 存在恶意攻击行为（可能是目录逃逸），请检查");
+            }
+            else {
+                parsed_dgst = parsed_data;
             }
 
-            verify(working_path, parsed_dgst.value());
+            verify(working_path, parsed_dgst);
         }
         std::cout << "用时：" << timer.get_milliseconds() << " 毫秒";
     }
